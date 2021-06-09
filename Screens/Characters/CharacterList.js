@@ -1,5 +1,6 @@
 import React from "react";
 import { View, StyleSheet, Dimensions, Image, Text } from "react-native";
+import { H1 } from "native-base";
 
 import { connect } from "react-redux";
 import * as actions from "../../Redux/Actions/favouriteActions";
@@ -10,7 +11,7 @@ import Toast from "react-native-toast-message";
 var { width } = Dimensions.get("window");
 
 const CharacterList = (props) => {
-  const { item } = props;
+  const { item, name, species, status, image } = props;
   return (
     <View style={styles.container}>
       <Image
@@ -38,8 +39,8 @@ const CharacterList = (props) => {
               Toast.show({
                 type: "success",
                 topOffset: 60,
-                text1: `${name} added to Cart`,
-                text2: "Check your Cart",
+                text1: `${item.name} added to Favourites`,
+                text2: "Check your Favourites",
               });
           }}
         >

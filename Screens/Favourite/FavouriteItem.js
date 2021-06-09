@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 import { Text, Left, Right, ListItem, Thumbnail, Body } from "native-base";
 
 const FavouriteItem = (props) => {
-  const data = props.item.item;
+  const data = props.item.item.favourite.item;
   //console.log(data);
 
   return (
@@ -17,10 +17,17 @@ const FavouriteItem = (props) => {
       </Left>
       <Body style={styles.body}>
         <Left>
-          <Text>{data.name}</Text>
+          <Text>
+            {data.name.length > 17
+              ? data.name.substring(0, 17 - 3) + "..."
+              : data.name}
+          </Text>
         </Left>
         <Right>
-          <Text>${data.species}</Text>
+          <Text>{data.status}</Text>
+        </Right>
+        <Right>
+          <Text>{data.species}</Text>
         </Right>
       </Body>
     </ListItem>

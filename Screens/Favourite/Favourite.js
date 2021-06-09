@@ -20,6 +20,7 @@ const Favourite = (props) => {
         <Container>
           <H1 style={{ alignSelf: "center" }}>Favourite List</H1>
           <SwipeListView
+            style={{ marginBottom: 40 }}
             data={props.favouriteItems}
             keyExtractor={(data, index) => Math.random().toString()}
             renderItem={(data) => <FavouriteItem item={data} />}
