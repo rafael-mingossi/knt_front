@@ -1,35 +1,77 @@
 import React from "react";
 import { Dimensions, View, StyleSheet, TouchableOpacity } from "react-native";
-import { Container, Text, Left, Right, H1 } from "native-base";
+import {
+  Container,
+  Text,
+  Left,
+  Right,
+  H1,
+  ListItem,
+  Thumbnail,
+  Body,
+} from "native-base";
 import { SwipeListView } from "react-native-swipe-list-view";
 import Icon from "react-native-vector-icons/FontAwesome";
-import EasyButton from "../../Shared/StyledComponents/EasyButton";
 
-import FavouriteItem from "./FavouriteItem";
-
-import { connect } from "react-redux";
-import * as actions from "../../Redux/Actions/favouriteActions";
+import { useSelector, useDispatch } from "react-redux";
 
 var { height, width } = Dimensions.get("window");
 
-const Favourite = (props) => {
+import { removeFavorite } from "../../Redux/Actions/favouriteActions";
+
+const Favourite = () => {
+  const { favorites } = useSelector((state) => state.favouriteItems);
+  //console.log(favorites);
+  const dispatch = useDispatch();
+  const removeFromFavorites = (fav) => dispatch(removeFavorite(fav));
+  const handleRemoveFavorite = (fav) => {
+    removeFromFavorites(fav);
+  };
+
   return (
     <>
-      {props.favouriteItems.length ? (
-        //favouriteItems comes from Reducer
+      {favorites.length !== 0 ? (
         <Container>
           <H1 style={{ alignSelf: "center" }}>Favourite List</H1>
+          <Text style={{ textAlign: "center", padding: 10 }}>
+            Slide left to delete
+          </Text>
           <SwipeListView
-            style={{ marginBottom: 40 }}
-            data={props.favouriteItems}
-            keyExtractor={(data, index) => Math.random().toString()}
-            renderItem={(data) => <FavouriteItem item={data} />}
-            //this will render the item hidden, slide left
-            renderHiddenItem={(data) => (
+            style={{ marginBottom: 10 }}
+            data={favorites}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <ListItem style={styles.listItem} key={item.id} avatar>
+                <Left>
+                  <Thumbnail
+                    source={{
+                      uri: item.image,
+                    }}
+                  />
+                </Left>
+                <Body style={styles.body}>
+                  <Left>
+                    <Text>
+                      {item.name.length > 17
+                        ? item.name.substring(0, 17 - 3) + "..."
+                        : item.name}
+                    </Text>
+                  </Left>
+                  <Right>
+                    <Text>{item.status}</Text>
+                  </Right>
+                  <Right>
+                    <Text>{item.species}</Text>
+                  </Right>
+                </Body>
+              </ListItem>
+            )}
+            //this will render the hidden item , slide left
+            renderHiddenItem={({ item }) => (
               <View style={styles.hiddenContainer}>
                 <TouchableOpacity
                   style={styles.hiddenButton}
-                  onPress={() => props.removeFromFavourite(data.item)}
+                  onPress={() => handleRemoveFavorite(item)}
                 >
                   <Icon name="trash" color={"white"} size={26} />
                 </TouchableOpacity>
@@ -44,13 +86,6 @@ const Favourite = (props) => {
             stopLeftSwipe={75}
             rightOpenValue={-75}
           />
-          <View style={styles.bottomContainer}>
-            <Right>
-              <EasyButton medium danger onPress={() => props.clearFavourite()}>
-                <Text style={{ color: "white" }}>Clear</Text>
-              </EasyButton>
-            </Right>
-          </View>
         </Container>
       ) : (
         <Container style={styles.emptyContainer}>
@@ -62,22 +97,6 @@ const Favourite = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  const { favouriteItems } = state;
-
-  return {
-    favouriteItems: favouriteItems,
-  };
-};
-
-//this will dispatch the action functions in redux to clear or remove favourites
-const mapDispatchToProps = (dispatch) => {
-  return {
-    clearFavourite: () => dispatch(actions.clearFavourite()),
-    removeFromFavourite: (item) => dispatch(actions.removeFromFavourite(item)),
-  };
-};
-
 const styles = StyleSheet.create({
   emptyContainer: {
     height: height,
@@ -85,13 +104,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  bottomContainer: {
-    flexDirection: "row",
-    position: "absolute",
-    bottom: 0,
-    left: 0,
+  listItem: {
+    alignItems: "center",
     backgroundColor: "white",
-    elevation: 20,
+    justifyContent: "center",
+  },
+  body: {
+    margin: 10,
+    alignItems: "center",
+    flexDirection: "row",
   },
   hiddenContainer: {
     flex: 1,
@@ -108,4 +129,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Favourite);
+export default Favourite;

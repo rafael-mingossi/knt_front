@@ -1,3 +1,7 @@
 export const ADD_TO_FAVOURITE = "ADD_TO_FAVOURITE";
 export const REMOVE_FROM_FAVOURITE = "REMOVE_FROM_FAVOURITE";
 export const CLEAR_FAVOURITE = "CLEAR_FAVOURITE";
+export const SET_FAV_BTN = "SET_FAV_BTN";
+export const UNFAV_BTN = "UNFAV_BTN";
+export const CLEAR_BTN = "CLEAR_BTN";
+export const GET_CHARACTERS = "GET_CHARACTERS";

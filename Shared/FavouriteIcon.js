@@ -1,28 +1,20 @@
 import React from "react";
 import { StyleSheet } from "react-native";
 import { Badge, Text } from "native-base";
-
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 
 const FavouriteIcon = (props) => {
+  const { favorites } = useSelector((state) => state.favouriteItems);
   return (
     //This will get the lenght of items from redux and display a small icon in favourites bottom icon
     <>
-      {props.favouriteItems.length ? (
+      {favorites.length !== 0 ? (
         <Badge style={styles.badge}>
-          <Text style={styles.text}>{props.favouriteItems.length}</Text>
+          <Text style={styles.text}>{favorites.length}</Text>
         </Badge>
       ) : null}
     </>
   );
-};
-
-const mapStateToProps = (state) => {
-  const { favouriteItems } = state;
-
-  return {
-    favouriteItems: favouriteItems,
-  };
 };
 
 const styles = StyleSheet.create({
@@ -43,4 +35,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps)(FavouriteIcon);
+export default FavouriteIcon;
