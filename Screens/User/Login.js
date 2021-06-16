@@ -5,24 +5,30 @@ import Input from "../../Shared/Form/Input";
 import Error from "../../Shared/Error";
 import EasyButton from "../../Shared/StyledComponents/EasyButton";
 
-import Main from "../../Navigators/Main";
-
 //Context
-//import AuthGlobal from "../../Context/store/AuthGlobal";
-//import { loginUser } from "../../Context/actions/Auth.actions";
+import AuthGlobal from "../../Context/store/AuthGlobal";
+import { loginUser } from "../../Context/actions/Auth.actions";
 
-const Login = (props) => {
-  //const context = useContext(AuthGlobal);
+const Login = ({ navigation }) => {
+  const context = useContext(AuthGlobal);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  //   useEffect(() => {
-  //     if (context.stateUser.isAuthenticated === true) {
-  //       props.navigation.navigate("Main");
-  //     }
-  //   }, [context.stateUser.isAuthenticated]);
+  useEffect(() => {
+    if (context.stateUser.isAuthenticated === true) {
+      navigation.navigate("Main");
+    }
+
+    //this will clear the email and password field in login screen
+    const unsubscribe = navigation.addListener("focus", () => {
+      setEmail("");
+      setPassword("");
+    });
+
+    return unsubscribe;
+  }, [context.stateUser.isAuthenticated, navigation]);
 
   const handleSubmit = () => {
     const user = {
@@ -56,11 +62,7 @@ const Login = (props) => {
       />
       <View style={styles.buttonGroup}>
         {error ? <Error message={error} /> : null}
-        <EasyButton
-          large
-          primary
-          onPress={() => props.navigation.navigate("Main")}
-        >
+        <EasyButton large primary onPress={() => handleSubmit()}>
           <Text style={{ color: "white" }}>Login</Text>
         </EasyButton>
       </View>
@@ -69,7 +71,7 @@ const Login = (props) => {
         <EasyButton
           large
           secondary
-          onPress={() => props.navigation.navigate("Register")}
+          onPress={() => navigation.navigate("Register")}
         >
           <Text style={{ color: "white" }}>Register</Text>
         </EasyButton>

@@ -1,9 +1,7 @@
-import React, { useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { View } from "react-native";
+import { View, BackHandler } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-
-//import AuthGlobal from "../Context/store/AuthGlobal";
 
 //Stacks
 import HomeNavigator from "./HomeNavigator";
@@ -11,10 +9,27 @@ import FavouriteNavigator from "./FavouriteNavigator";
 
 import FavouriteIcon from "../Shared/FavouriteIcon";
 
+import { logoutUser } from "../Context/actions/Auth.actions";
+import AuthGlobal from "../Context/store/AuthGlobal";
+
 const Tab = createBottomTabNavigator();
 
 const Main = () => {
-  //const context = useContext(AuthGlobal);
+  const context = useContext(AuthGlobal);
+
+  useEffect(() => {
+    const backAction = () => {
+      BackHandler.exitApp();
+      logoutUser(context.dispatch);
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   return (
     <Tab.Navigator
